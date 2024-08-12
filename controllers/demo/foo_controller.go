@@ -24,7 +24,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
-	demov1alpha1 "apiserver/pkg/apis/demo/v1alpha1"
+	demov1alpha1 "github.com/guodoliu/apiserver/pkg/apis/demo/v1alpha1"
 )
 
 // FooReconciler reconciles a Foo object

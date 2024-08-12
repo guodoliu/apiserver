@@ -22,16 +22,22 @@ import (
 	"k8s.io/apimachinery/pkg/runtime/schema"
 )
 
-var AddToScheme = func(scheme *runtime.Scheme) error {
-	metav1.AddToGroupVersion(scheme, schema.GroupVersion{
-		Group:   "demo.guodoliu.bytedance.com",
-		Version: "v1alpha1",
-	})
-	// +kubebuilder:scaffold:install
+const GroupName = "demo.k8s.io"
 
-	scheme.AddKnownTypes(schema.GroupVersion{
-		Group:   "demo.guodoliu.bytedance.com",
-		Version: "v1alpha1",
-	}, &Foo{}, &FooList{})
+var SchemeGroupVersion = schema.GroupVersion{Group: GroupName, Version: "v1alpha1"}
+
+var (
+	SchemeBuilder      runtime.SchemeBuilder
+	localSchemeBuilder = &SchemeBuilder
+	AddToScheme        = localSchemeBuilder.AddToScheme
+)
+
+func init() {
+	localSchemeBuilder.Register(addKnownTypes)
+}
+
+func addKnownTypes(scheme *runtime.Scheme) error {
+	scheme.AddKnownTypes(SchemeGroupVersion, &Foo{}, &FooList{})
+	metav1.AddToGroupVersion(scheme, SchemeGroupVersion)
 	return nil
 }

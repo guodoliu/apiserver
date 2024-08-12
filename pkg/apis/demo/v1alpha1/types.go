@@ -1,4 +1,3 @@
-
 /*
 Copyright 2024.
 
@@ -18,21 +17,12 @@ limitations under the License.
 package v1alpha1
 
 import (
-	"context"
-
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
- 	"k8s.io/apimachinery/pkg/runtime"
-	"k8s.io/apimachinery/pkg/runtime/schema"
-	"k8s.io/apimachinery/pkg/util/validation/field"
-	"sigs.k8s.io/apiserver-runtime/pkg/builder/resource"
-	"sigs.k8s.io/apiserver-runtime/pkg/builder/resource/resourcestrategy"
 )
 
 // +genclient
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 
-// Foo
-// +k8s:openapi-gen=true
 type Foo struct {
 	metav1.TypeMeta   `json:",inline"`
 	metav1.ObjectMeta `json:"metadata,omitempty"`
@@ -44,7 +34,7 @@ type Foo struct {
 // FooList
 // +k8s:deepcopy-gen:interfaces=k8s.io/apimachinery/pkg/runtime.Object
 type FooList struct {
-	metav1.TypeMeta   `json:",inline"`
+	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`
 
 	Items []Foo `json:"items"`
@@ -52,67 +42,29 @@ type FooList struct {
 
 // FooSpec defines the desired state of Foo
 type FooSpec struct {
+	// Container image that the container is running to do our foo work
+	Image string
+	// Config is the configuration used by foo container
+	Config FooConfig
 }
 
-var _ resource.Object = &Foo{}
-var _ resourcestrategy.Validater = &Foo{}
-
-func (in *Foo) GetObjectMeta() *metav1.ObjectMeta {
-	return &in.ObjectMeta
+type FooConfig struct {
+	// Msg says hello world!
+	Msg string
+	// +optional
+	Msg1 string
 }
 
-func (in *Foo) NamespaceScoped() bool {
-	return false
-}
-
-func (in *Foo) New() runtime.Object {
-	return &Foo{}
-}
-
-func (in *Foo) NewList() runtime.Object {
-	return &FooList{}
-}
-
-func (in *Foo) GetGroupVersionResource() schema.GroupVersionResource {
-	return schema.GroupVersionResource{
-		Group:    "demo.guodoliu.bytedance.com",
-		Version:  "v1alpha1",
-		Resource: "foos",
-	}
-}
-
-func (in *Foo) IsStorageVersion() bool {
-	return true
-}
-
-func (in *Foo) Validate(ctx context.Context) field.ErrorList {
-	// TODO(user): Modify it, adding your API validation here.
-	return nil
-}
-
-var _ resource.ObjectList = &FooList{}
-
-func (in *FooList) GetListMeta() *metav1.ListMeta {
-	return &in.ListMeta
-}
-// FooStatus defines the observed state of Foo
 type FooStatus struct {
+	Phase      FooPhase       `json:"phase,omitempty"`
+	Conditions []FooCondition `json:"conditions,omitempty"`
 }
 
-func (in FooStatus) SubResourceName() string {
-	return "status"
-}
+type FooPhase string
 
-// Foo implements ObjectWithStatusSubResource interface.
-var _ resource.ObjectWithStatusSubResource = &Foo{}
+type FooConditionType string
 
-func (in *Foo) GetStatus() resource.StatusSubResource {
-	return in.Status
-}
-
-// FooStatus{} implements StatusSubResource interface.
-var _ resource.StatusSubResource = &FooStatus{}
-
-func (in FooStatus) CopyTo(parent resource.ObjectWithStatusSubResource) {
-	parent.(*Foo).Status = in
+type FooCondition struct {
+	Type   FooConditionType       `json:"type"`
+	Status metav1.ConditionStatus `json:"status"`
 }

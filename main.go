@@ -31,7 +31,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/healthz"
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 
-	democontrollers "apiserver/controllers/demo"
+	democontrollers "github.com/guodoliu/apiserver/controllers/demo"
 	//+kubebuilder:scaffold:imports
 )
 

@@ -1,4 +1,3 @@
-
 /*
 Copyright 2024.
 
@@ -20,9 +19,10 @@ limitations under the License.
 // of the same resource
 
 // +k8s:openapi-gen=true
-// +k8s:deepcopy-gen=package,register
-// +k8s:conversion-gen=apiserver/pkg/apis/demo
+// +k8s:deepcopy-gen=package
 // +k8s:defaulter-gen=TypeMeta
+// +k8s:protobuf-gen=package
+// +k8s:conversion-gen=github.com/guodoliu/apiserver/pkg/apis/demo
 // +groupName=demo.guodoliu.bytedance.com
-package v1alpha1 // import "apiserver/pkg/apis/demo/v1alpha1"
 
+package v1alpha1 // import "apiserver/pkg/apis/demo/v1alpha1"
